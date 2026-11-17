@@ -1,6 +1,6 @@
 # System architecture
 
-The values below are derived from `quartus/nios_system.qsys`, `quartus/TP.qsf` and the C sources.
+The values below are derived from `quartus/nios_system.qsys`, `quartus/thermometer.qsf` and the C sources.
 
 ## Processor and clocking
 
@@ -26,7 +26,7 @@ End addresses are exclusive.
 
 ## Interrupts and interfaces
 
-Timer2 runs continuously with a count of `0xBEBC20` (12,500,000 cycles, 250 ms at 50 MHz). Firmware enables IRQ 4 through `ienable = 0x10` and enables global interrupts. `interrupt_handler()` checks `ipending`, acknowledges the timer and calls `Timer2_irq()`, which sets `Flag250ms`. The interval timer supplies I2C delays.
+Timer2 runs continuously with a count of `0xBEBC20` (12,500,000 cycles, 250 ms at 50 MHz). Firmware enables IRQ 4 through `ienable = 0x10` and enables global interrupts. `interrupt_handler()` checks `ipending`, acknowledges the timer and calls `Timer2_irq()`, which sets `tick_250ms`. The interval timer supplies I2C delays.
 
 The I2C PIO uses bit 1 for SCL and bit 0 for SDA. SCL is driven directly on `GPIO_1[11]`; SDA is open-drain on `GPIO_1[12]`, driven low or released to high impedance. Both lines require external pull-ups, supplied by the sensor module in the reference setup. The design assumes a single master. Effective SCL timing depends on software execution and has not been measured.
 

@@ -1,6 +1,6 @@
 # Verification evidence
 
-The results below are historical unless otherwise stated. Full reports and generated binaries are not tracked. The reference build used Quartus Prime 18.1.0 Build 625 Standard Edition, revision `TP`, top-level `DE1_SoC_Basic_Computer`. See [build and reproduction](build.md) for the procedure.
+The results below are historical unless otherwise stated. Full reports and generated binaries are not tracked. The reference build used Quartus Prime 18.1.0 Build 625 Standard Edition, top-level `DE1_SoC_Basic_Computer`. See [build and reproduction](build.md) for the procedure.
 
 ## Reference Quartus build
 
@@ -28,14 +28,26 @@ Reported total negative slack was zero. These margins cover constrained internal
 
 ## Reference firmware correspondence
 
-A prior `readelf` inspection of DWARF information in the reference executable found `lire_temperature`, `conversion_BCD`, `main`, `init_IT` and `Timer2_irq`, source declaration lines 82, 120 and 133 for the first three, and the positive and negative temperature format strings. It recorded GNU C11 5.3.0 with `-O1 -g -mno-cache-volatile -mno-hw-mul -mno-hw-div`. This supports correspondence with the tracked source; it does not establish a bit-for-bit reproducible build.
+A prior `readelf` inspection of the reference executable found the temperature read, BCD conversion and interrupt symbols along with the positive and negative console format strings. It recorded GNU C11 5.3.0 with `-O1 -g -mno-cache-volatile -mno-hw-mul -mno-hw-div`. These observations apply to the pre-refactor reference build.
 
 | Untracked reference artifact | SHA-256 |
 |---|---|
-| `TP.sof` | `9765f4e60d2075a77117487b6611603376a69b738c0f65fc0da28ae1461015d3` |
-| `montimer.elf` | `cb20df6610844ce8f60838664256d134452fdab3966ac55718cab281b1e45039` |
-| `montimer.srec` | `07979987d989dfae65c1a06312d56e242fb6603c4cd310e8843877e22a889549` |
+| FPGA configuration (.sof) | `9765f4e60d2075a77117487b6611603376a69b738c0f65fc0da28ae1461015d3` |
+| Nios II executable (.elf) | `cb20df6610844ce8f60838664256d134452fdab3966ac55718cab281b1e45039` |
+| Nios II load image (.srec) | `07979987d989dfae65c1a06312d56e242fb6603c4cd310e8843877e22a889549` |
 
 ## Board observation
 
 Console temperature output, the LED indicator and HEX display were previously observed on a DE1-SoC board. No capture is published. The hardware was not rerun on the current host. SCL period and disconnected-sensor behavior have not been measured or tested on the board.
+
+## Host checks
+
+Run `make test` for the firmware's MCP9808 register read and BCD display
+conversion with a scripted I2C bus. The tests check signed values, all
+eight alert-bit combinations for each input, the BCD display bounds, and
+STOP and output preservation for NACK on each transmitted byte.
+
+With GHDL installed, the same command checks the top-level VHDL and
+SDRAM PLL wrapper. A test-only component declaration provides the
+`altpll` interface for the syntax check. FPGA implementation and vendor
+IP behavior require the Intel flow.

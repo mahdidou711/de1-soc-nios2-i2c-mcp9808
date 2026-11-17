@@ -1,8 +1,8 @@
-#include "montimer.h"
+#include "interval_timer.h"
 
 /*
- * Adresse Interval Timer vue dans Platform Designer : 0x10002000.
- * Le bit 31 est mis à 1 pour utiliser l'espace uncached du Nios II.
+ * Platform Designer assigns the interval timer base address 0x10002000.
+ * Bit 31 selects the uncached address on Nios II.
  */
 #define INTERVAL_TIMER_BASE 0x90002000u
 

@@ -1,5 +1,5 @@
 # =============================================================================
-# TP4 Informatique Industrielle - modèle étudiant DE1-SoC / Quartus Prime 18.1
+# DE1-SoC thermometer / Quartus Prime 18.1
 # FPGA : Cyclone V SoC 5CSEMA5F31C6
 # =============================================================================
 set_global_assignment -name FAMILY "Cyclone V"

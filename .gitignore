@@ -1,4 +1,4 @@
-# Bases et caches Quartus
+# Quartus databases and caches
 db/
 incremental_db/
 greybox_tmp/
@@ -6,11 +6,11 @@ greybox_tmp/
 *.qws
 *.bak
 
-# Sortie de Platform Designer (régénérée)
-quartus/nios_system/
+# Generated Platform Designer files
+/quartus/nios_system/
 *.sopcinfo
 
-# Rapports et fichiers de compilation Quartus
+# Quartus reports and build products
 *.rpt
 *.rpt.htm
 *.rpt.htm_files/
@@ -23,7 +23,7 @@ quartus/nios_system/
 *.cdf
 c5_pin_model_dump.txt
 
-# Binaires FPGA et Nios II
+# FPGA, Nios II and host build products
 *.sof
 *.pof
 *.rbf
@@ -31,12 +31,31 @@ c5_pin_model_dump.txt
 *.srec
 *.o
 *.objdump
+*.cf
+/build/
+/results/
 
-# Archives et documents tiers
+# Internal material, reference files and archives
+documentation_interne/
+AGENTS.md
+/ref/
 *.zip
 *.pdf
 
-# Environnements locaux
+# Local environments and caches
 .vscode/
 .idea/
 __pycache__/
+.pytest_cache/
+.mplconfig/
+.venv/
+.env
+
+# LaTeX build products
+/report/build/
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.toc
+*.listing

@@ -38,7 +38,7 @@ end DE1_SoC_Basic_Computer;
 architecture rtl of DE1_SoC_Basic_Computer is
 
     ------------------------------------------------------------
-    -- Systeme Nios II avec interface Avalon HEX_PIO
+    -- Nios II system with Avalon HEX_PIO interface
     ------------------------------------------------------------
 
     component nios_system is
@@ -61,7 +61,7 @@ architecture rtl of DE1_SoC_Basic_Computer is
             i2c_reg_in_port             : in    std_logic_vector(7 downto 0);
             i2c_reg_out_port            : out   std_logic_vector(7 downto 0);
 
-            -- Nouveau PIO : quatre chiffres BCD
+            -- Four BCD digits
             hex_pio_external_connection_export :
                 out std_logic_vector(15 downto 0)
         );
@@ -69,7 +69,7 @@ architecture rtl of DE1_SoC_Basic_Computer is
 
 
     ------------------------------------------------------------
-    -- PLL SDRAM
+    -- SDRAM PLL
     ------------------------------------------------------------
 
     component sdram_pll is
@@ -82,7 +82,7 @@ architecture rtl of DE1_SoC_Basic_Computer is
 
 
     ------------------------------------------------------------
-    -- Signaux internes
+    -- Internal signals
     ------------------------------------------------------------
 
     signal system_clock : std_logic;
@@ -93,18 +93,18 @@ architecture rtl of DE1_SoC_Basic_Computer is
     signal I2Cin  : std_logic_vector(7 downto 0);
     signal I2Cout : std_logic_vector(7 downto 0);
 
-    -- Temperature au format BCD :
-    -- [15:12] dizaines
-    -- [11:8]  unites
-    -- [7:4]   dixiemes
-    -- [3:0]   centiemes
+    -- Temperature in BCD
+    -- [15:12] tens
+    -- [11:8]  units
+    -- [7:4]   tenths
+    -- [3:0]   hundredths
 
     signal temperature_bcd : std_logic_vector(15 downto 0);
 
 
     ------------------------------------------------------------
-    -- Decodeur BCD vers afficheur 7 segments
-    -- Segments actifs a l'etat bas
+    -- BCD to seven-segment decoder
+    -- Active-low segments
     ------------------------------------------------------------
 
     function hex7seg(value : std_logic_vector(3 downto 0))
@@ -122,7 +122,7 @@ architecture rtl of DE1_SoC_Basic_Computer is
             when "1000" => return "0000000"; -- 8
             when "1001" => return "0010000"; -- 9
 
-            -- Codes hors BCD : affichage eteint
+            -- Blank the display for non-BCD codes
             when others => return "1111111";
         end case;
     end function;
@@ -131,7 +131,7 @@ architecture rtl of DE1_SoC_Basic_Computer is
 begin
 
     ------------------------------------------------------------
-    -- Generation des horloges
+    -- Clock generation
     ------------------------------------------------------------
 
     SDRAM_PLL_INST : sdram_pll
@@ -143,7 +143,7 @@ begin
 
 
     ------------------------------------------------------------
-    -- Instanciation du systeme Nios II
+    -- Nios II system instance
     ------------------------------------------------------------
 
     NiosII : nios_system
@@ -162,20 +162,20 @@ begin
             zs_ras_n_from_the_sdram     => DRAM_RAS_N,
             zs_we_n_from_the_sdram      => DRAM_WE_N,
 
-            -- Interface I2C
+            -- I2C interface
             i2c_reg_in_port  => I2Cin,
             i2c_reg_out_port => I2Cout,
 
             -- LED
             ledr_export => LEDR,
 
-            -- Nouveau PIO Avalon 16 bits
+            -- 16-bit Avalon PIO
             hex_pio_external_connection_export => temperature_bcd
         );
 
 
     ------------------------------------------------------------
-    -- Connexions SDRAM
+    -- SDRAM connections
     ------------------------------------------------------------
 
     DRAM_BA   <= dram_ba_s;
@@ -184,28 +184,28 @@ begin
 
 
     ------------------------------------------------------------
-    -- Interface I2C du capteur MCP9808
+    -- MCP9808 I2C interface
     ------------------------------------------------------------
 
-    -- Bit 1 : SCL
-    -- Bit 0 : SDA
+    -- Bit 1 is SCL
+    -- Bit 0 is SDA
 
     I2Cin <= "000000" & GPIO_1(11) & GPIO_1(12);
 
-    -- Horloge I2C
+    -- I2C clock
     GPIO_1(11) <= I2Cout(1);
 
-    -- Ligne SDA en drain ouvert
+    -- Open-drain SDA
     GPIO_1(12) <= 'Z' when I2Cout(0) = '1' else '0';
 
 
     ------------------------------------------------------------
-    -- Affichage de la temperature sur quatre digits HEX
+    -- Temperature on four HEX digits
     ------------------------------------------------------------
 
-    -- Exemple :
-    -- Temperature = 23.50 degres C
-    -- Valeur transmise par Nios II = 0x2350
+    -- Example
+    -- Temperature = 23.50 degrees C
+    -- Value written by Nios II = 0x2350
     --
     -- HEX3 = 2
     -- HEX2 = 3
@@ -222,7 +222,7 @@ begin
 
 
     ------------------------------------------------------------
-    -- Afficheurs HEX4 et HEX5 inutilises
+    -- Unused HEX4 and HEX5 displays
     ------------------------------------------------------------
 
     HEX4 <= (others => '1');

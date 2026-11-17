@@ -2,7 +2,7 @@
     <architecture>Nios II</architecture>
     <system>
         <system_info filepath="true">../nios_system.sopcinfo</system_info>
-        <system_sof filepath="true">../TP.sof</system_sof>
+        <system_sof filepath="true">../thermometer.sof</system_sof>
         <board>Not Required</board>
         <cable>DE-SoC [USB-1]</cable>
         <processor>cpu</processor>
@@ -12,12 +12,13 @@
     <program>
         <type>C Program</type>
         <source_files>
-            <source_file filepath="true">montimer.c</source_file>
+            <source_file filepath="true">interval_timer.c</source_file>
             <source_file filepath="true">amp/lib/src/niosII_jtag_uart.c</source_file>
             <source_file filepath="true">interrupt.c</source_file>
             <source_file filepath="true">main_program_timer.c</source_file>
             <source_file filepath="true">sprint.c</source_file>
             <source_file filepath="true">I2C_functions.c</source_file>
+            <source_file filepath="true">temperature.c</source_file>
         </source_files>
         <options>
             <compiler_flags>-g -O1 -ffunction-sections -fverbose-asm -fno-inline -mno-cache-volatile</compiler_flags>
